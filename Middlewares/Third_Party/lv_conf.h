@@ -27,15 +27,6 @@
 #define LV_FS_FATFS_LETTER 'S'
 #define LV_FS_FATFS_PATH "0:/"
 
-/* PNG désactivé. */
-#define LV_USE_LODEPNG 0
-
-/* Décodeur JPEG pour le fond d'écran. */
-#define LV_USE_TJPGD 1
-
-/* Décodeur JPEG alternatif désactivé. */
-#define LV_USE_LIBJPEG_TURBO 0
-
 /* Décodeur BMP désactivé. */
 #define LV_USE_BMP 0
 

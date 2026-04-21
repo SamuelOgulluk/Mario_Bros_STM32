@@ -37,6 +37,8 @@ file(GLOB_RECURSE LVGL_SOURCES CONFIGURE_DEPENDS
   "${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/LVGL/src/*.c"
 )
 
+list(FILTER LVGL_SOURCES EXCLUDE REGEX ".*/libs/(lodepng|libpng|tjpgd|libjpeg_turbo)/.*")
+
 set(FREERTOS_SOURCES
   "${CMAKE_SOURCE_DIR}/Core/Src/freertos.c"
   "${CMAKE_SOURCE_DIR}/Middlewares/Third_Party/FreeRTOS/Source/croutine.c"

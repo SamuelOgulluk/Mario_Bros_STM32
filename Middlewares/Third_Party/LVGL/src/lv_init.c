@@ -25,10 +25,6 @@
 #include "libs/ffmpeg/lv_ffmpeg.h"
 #include "libs/freetype/lv_freetype.h"
 #include "libs/fsdrv/lv_fsdrv.h"
-#include "libs/tjpgd/lv_tjpgd.h"
-#include "libs/libjpeg_turbo/lv_libjpeg_turbo.h"
-#include "libs/lodepng/lv_lodepng.h"
-#include "libs/libpng/lv_libpng.h"
 #include "libs/libwebp/lv_libwebp.h"
 #include "libs/tiny_ttf/lv_tiny_ttf.h"
 #include "draw/lv_draw.h"
@@ -43,22 +39,6 @@
 #include "others/translation/lv_translation.h"
 #include "drivers/wayland/lv_wayland_private.h"
 
-#if LV_USE_SVG
-    #include "libs/svg/lv_svg_decoder.h"
-#endif
-
-#if LV_USE_NEMA_GFX
-    #include "draw/nema_gfx/lv_draw_nema_gfx.h"
-#endif
-#if LV_USE_PXP
-    #if LV_USE_DRAW_PXP || LV_USE_ROTATE_PXP
-        #include "draw/nxp/pxp/lv_draw_pxp.h"
-    #endif
-#endif
-#if LV_USE_G2D
-    #if LV_USE_DRAW_G2D
-        #include "draw/nxp/g2d/lv_draw_g2d.h"
-    #endif
 #endif
 #if LV_USE_DRAW_DAVE2D
     #include "draw/renesas/dave2d/lv_draw_dave2d.h"
@@ -381,22 +361,6 @@ void lv_init(void)
     /*Use the earlier initialized position of FFmpeg decoder as a fallback decoder*/
 #if LV_USE_FFMPEG
     lv_ffmpeg_init();
-#endif
-
-#if LV_USE_LODEPNG
-    lv_lodepng_init();
-#endif
-
-#if LV_USE_LIBPNG
-    lv_libpng_init();
-#endif
-
-#if LV_USE_TJPGD
-    lv_tjpgd_init();
-#endif
-
-#if LV_USE_LIBJPEG_TURBO
-    lv_libjpeg_turbo_init();
 #endif
 
 #if LV_USE_LIBWEBP
