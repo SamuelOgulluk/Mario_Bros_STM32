@@ -1,0 +1,42 @@
+# Build directories
+build/
+cmake-build*/
+Debug/
+Release/
+
+# CMake/Ninja generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+build.ninja
+compile_commands.json
+*.ninja
+
+# Compiled objects and binaries
+*.o
+*.obj
+*.a
+*.lib
+*.elf
+*.axf
+*.bin
+*.hex
+*.map
+*.out
+*.d
+
+# IDE/editor and tool caches
+.vscode/
+.idea/
+.settings/
+.clangd
+.cproject
+.mxproject
+.project
+
+# STM32CubeMX scratch
+mx.scratch
+
+# OS clutter
+Thumbs.db
+.DS_Store

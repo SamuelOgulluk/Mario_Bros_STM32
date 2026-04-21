@@ -1,0 +1,41 @@
+set(CMAKE_SYSTEM_NAME               Generic)
+set(CMAKE_SYSTEM_PROCESSOR          arm)
+
+set(CMAKE_C_COMPILER_ID GNU)
+set(CMAKE_CXX_COMPILER_ID GNU)
+
+# Some default GCC settings
+# arm-none-eabi- must be part of path environment
+set(TOOLCHAIN_PREFIX                arm-none-eabi-)
+
+find_program(ARM_NONE_EABI_GCC NAMES ${TOOLCHAIN_PREFIX}gcc)
+find_program(ARM_NONE_EABI_GXX NAMES ${TOOLCHAIN_PREFIX}g++)
+find_program(ARM_NONE_EABI_OBJCOPY NAMES ${TOOLCHAIN_PREFIX}objcopy)
+find_program(ARM_NONE_EABI_SIZE NAMES ${TOOLCHAIN_PREFIX}size)
+
+if(NOT ARM_NONE_EABI_GCC OR NOT ARM_NONE_EABI_GXX)
+	message(FATAL_ERROR "arm-none-eabi toolchain not found in PATH")
+endif()
+
+set(CMAKE_C_COMPILER                ${ARM_NONE_EABI_GCC} CACHE FILEPATH "C compiler" FORCE)
+set(CMAKE_ASM_COMPILER              ${ARM_NONE_EABI_GCC} CACHE FILEPATH "ASM compiler" FORCE)
+set(CMAKE_CXX_COMPILER              ${ARM_NONE_EABI_GXX} CACHE FILEPATH "CXX compiler" FORCE)
+set(CMAKE_LINKER                    ${ARM_NONE_EABI_GXX} CACHE FILEPATH "Linker" FORCE)
+set(CMAKE_OBJCOPY                   ${ARM_NONE_EABI_OBJCOPY} CACHE FILEPATH "Objcopy" FORCE)
+set(CMAKE_SIZE                      ${ARM_NONE_EABI_SIZE} CACHE FILEPATH "Size" FORCE)
+
+set(CMAKE_EXECUTABLE_SUFFIX_ASM     ".elf")
+set(CMAKE_EXECUTABLE_SUFFIX_C       ".elf")
+set(CMAKE_EXECUTABLE_SUFFIX_CXX     ".elf")
+
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
+
+set(CMAKE_C_FLAGS_DEBUG "")
+set(CMAKE_CXX_FLAGS_DEBUG "")
+set(CMAKE_ASM_FLAGS_DEBUG "")
+set(CMAKE_EXE_LINKER_FLAGS_DEBUG "")
+
+set(CMAKE_C_FLAGS_RELEASE "")
+set(CMAKE_CXX_FLAGS_RELEASE "")
+set(CMAKE_ASM_FLAGS_RELEASE "")
+set(CMAKE_EXE_LINKER_FLAGS_RELEASE "")

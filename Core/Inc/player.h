@@ -1,0 +1,45 @@
+#ifndef PLAYER_H
+#define PLAYER_H
+
+#include <stdint.h>
+
+#define JOYSTICK_DEFAULT_CENTER 2048U
+#define JOYSTICK_DEADZONE_X 140U
+#define JOYSTICK_DEADZONE_X_RELEASE 90U
+#define JOYSTICK_SAMPLE_COUNT 24U
+#define JOYSTICK_AXIS_COUNT 4U
+#define JOYSTICK_AXIS_X_INDEX 0U
+#define JOYSTICK_AXIS_X_INVERT 1
+#define JOYSTICK_X_CENTER_TRACK_WINDOW 220
+#define JOYSTICK_X_CENTER_TRACK_ALPHA 16U
+#define JOYSTICK_BUTTON_DEBOUNCE_MAX 1U
+
+#define PLAYER_FIXED_SHIFT 8
+#define PLAYER_FIXED_ONE (1 << PLAYER_FIXED_SHIFT)
+
+#define PLAYER_WALK_SPEED_FP   ((5 * PLAYER_FIXED_ONE) / 2)
+#define PLAYER_SPRINT_SPEED_FP (4 * PLAYER_FIXED_ONE)
+#define PLAYER_GROUND_ACCEL_FP (PLAYER_FIXED_ONE / 2)
+#define PLAYER_AIR_ACCEL_FP    (PLAYER_FIXED_ONE / 4)
+#define PLAYER_GROUND_DECEL_FP (PLAYER_FIXED_ONE)
+#define PLAYER_AIR_DECEL_FP    (PLAYER_FIXED_ONE / 8)
+
+#define PLAYER_JUMP_SPEED_FP   (16 * PLAYER_FIXED_ONE)
+#define PLAYER_GRAVITY_FP      ((9 * PLAYER_FIXED_ONE) / 8)
+#define PLAYER_MAX_FALL_SPEED_FP (16 * PLAYER_FIXED_ONE)
+#define PLAYER_COYOTE_TICKS 6U
+#define PLAYER_JUMP_BUFFER_TICKS 6U
+#define PLAYER_GAME_OVER_Y 320
+
+typedef struct {
+  int16_t dx;
+  int16_t vy;
+  uint8_t jump;
+  uint32_t axis_raw[4];
+} PlayerDebug;
+
+void Player_Init(void);
+void Player_Update(void);
+void Player_GetDebug(PlayerDebug * debug);
+
+#endif /* PLAYER_H */
