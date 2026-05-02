@@ -48,14 +48,17 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+SemaphoreHandle_t g_adc1_mutex;
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
+osThreadId audioTaskHandle;
 
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
+void StartAudioTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -101,15 +104,61 @@ void MX_FREERTOS_Init(void) {
   /* add queues, ... */
   /* USER CODE END RTOS_QUEUES */
 
+  g_adc1_mutex = xSemaphoreCreateMutex();
+  if(g_adc1_mutex == NULL) {
+    Error_Handler();
+  }
+
   /* Create the thread(s) */
+  /* definition and creation of audioTask */
+  osThreadDef(audioTask, StartAudioTask, osPriorityBelowNormal, 0, AUDIO_TASK_STACK_WORDS);
+  audioTaskHandle = osThreadCreate(osThread(audioTask), NULL);
+  if(audioTaskHandle == NULL) {
+    Error_Handler();
+  }
+
   /* definition and creation of defaultTask */
   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, DEFAULT_TASK_STACK_WORDS);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+  if(defaultTaskHandle == NULL) {
+    Error_Handler();
+  }
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* input/game loop runs in defaultTask */
+  /* audio runs in a dedicated task; gameplay stays in defaultTask for LVGL safety */
   /* USER CODE END RTOS_THREADS */
 
+}
+
+/* USER CODE BEGIN Header_StartAudioTask */
+/**
+  * @brief  Function implementing the audioTask thread.
+  * @param  argument: Not used
+  * @retval None
+  */
+/* USER CODE END Header_StartAudioTask */
+void StartAudioTask(void const * argument)
+{
+  /* USER CODE BEGIN StartAudioTask */
+  AudioTaskState_t st;
+
+  (void) argument;
+  st = (AudioTaskState_t){
+    .audio_retry_tick = HAL_GetTick()
+  };
+
+  for(;;)
+  {
+    if((AppAudio_IsRunning() == 0U) && ((int32_t)(HAL_GetTick() - st.audio_retry_tick) >= 0)) {
+      (void)AppAudio_StartFromFile("0:/son/theme.wav");
+      st.audio_retry_tick = HAL_GetTick() + 1000U;
+    }
+
+    AppAudio_Process();
+
+    vTaskDelay(pdMS_TO_TICKS(AUDIO_TASK_PERIOD_MS));
+  }
+  /* USER CODE END StartAudioTask */
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -127,20 +176,11 @@ void StartDefaultTask(void const * argument)
   (void) argument;
   Player_Init();
   st = (DefaultTaskState_t){
-    .next_update_tick = HAL_GetTick()
   };
-  st.audio_retry_tick = st.next_update_tick + 1000U;
 
   /* Infinite loop */
   for(;;)
   {
-    if((AppAudio_IsRunning() == 0U) && ((int32_t)(HAL_GetTick() - st.audio_retry_tick) >= 0)) {
-      (void)AppAudio_StartFromFile("0:/son/theme.wav");
-      st.audio_retry_tick = HAL_GetTick() + 1000U;
-    }
-
-    AppAudio_Process();
-
     st.control_tick_count++;
     if(st.control_tick_count >= CONTROL_UPDATE_LOOP_DIV) {
       st.control_tick_count = 0U;
@@ -148,14 +188,16 @@ void StartDefaultTask(void const * argument)
 
       st.debug_tick_count++;
       if(st.debug_tick_count >= DEBUG_UPDATE_LOOP_DIV) {
-        Player_GetDebug(&st.debug);
-        UI_SetDebugInput(st.debug.dx,
-                         st.debug.vy,
-                         st.debug.jump,
-                         st.debug.axis_raw[0],
-                         st.debug.axis_raw[1],
-                         st.debug.axis_raw[2],
-                         st.debug.axis_raw[3]);
+        PlayerDebug debug;
+
+        Player_GetDebug(&debug);
+        UI_SetDebugInput(debug.dx,
+                         debug.vy,
+                         debug.jump,
+                         debug.axis_raw[0],
+                         debug.axis_raw[1],
+                         debug.axis_raw[2],
+                         debug.axis_raw[3]);
         st.debug_tick_count = 0U;
       }
     }
@@ -174,11 +216,7 @@ void StartDefaultTask(void const * argument)
       st.led_tick_count = 0U;
     }
 
-    while((int32_t)(HAL_GetTick() - st.next_update_tick) < (int32_t)MAIN_LOOP_PERIOD_MS)
-    {
-      taskYIELD();
-    }
-    st.next_update_tick += MAIN_LOOP_PERIOD_MS;
+    vTaskDelay(pdMS_TO_TICKS(MAIN_LOOP_PERIOD_MS));
   }
   /* USER CODE END StartDefaultTask */
 }

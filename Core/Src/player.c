@@ -3,6 +3,7 @@
 #include "main.h"
 #include "adc.h"
 #include "app_ui_player_backend.h"
+#include "freertos_app.h"
 #include "player_types.h"
 
 #include <stdbool.h>
@@ -12,27 +13,49 @@ static PlayerController_t g_player_controller;
 static uint32_t Joystick_ReadAdcChannel(ADC_HandleTypeDef * hadc, uint32_t channel)
 {
   ADC_ChannelConfTypeDef sConfig = {0};
+  uint32_t value;
+  BaseType_t locked;
+
+  locked = pdTRUE;
+  if(hadc == &hadc1) {
+    locked = xSemaphoreTake(g_adc1_mutex, portMAX_DELAY);
+    if(locked != pdTRUE) {
+      return JOYSTICK_DEFAULT_CENTER;
+    }
+  }
 
   sConfig.Channel = channel;
   sConfig.Rank = ADC_REGULAR_RANK_1;
   sConfig.SamplingTime = ADC_SAMPLETIME_480CYCLES;
 
   if(HAL_ADC_ConfigChannel(hadc, &sConfig) != HAL_OK) {
+    if(hadc == &hadc1) {
+      (void)xSemaphoreGive(g_adc1_mutex);
+    }
     return JOYSTICK_DEFAULT_CENTER;
   }
 
   if(HAL_ADC_Start(hadc) != HAL_OK) {
+    if(hadc == &hadc1) {
+      (void)xSemaphoreGive(g_adc1_mutex);
+    }
     return JOYSTICK_DEFAULT_CENTER;
   }
 
   if(HAL_ADC_PollForConversion(hadc, 5U) != HAL_OK) {
     (void)HAL_ADC_Stop(hadc);
+    if(hadc == &hadc1) {
+      (void)xSemaphoreGive(g_adc1_mutex);
+    }
     return JOYSTICK_DEFAULT_CENTER;
   }
 
   {
-    uint32_t value = HAL_ADC_GetValue(hadc);
+    value = HAL_ADC_GetValue(hadc);
     (void)HAL_ADC_Stop(hadc);
+    if(hadc == &hadc1) {
+      (void)xSemaphoreGive(g_adc1_mutex);
+    }
     return value;
   }
 }

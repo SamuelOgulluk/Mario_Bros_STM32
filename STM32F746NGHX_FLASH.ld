@@ -44,7 +44,8 @@ _Min_Stack_Size = 0x400; /* required amount of stack */
 /* Memories definition */
 MEMORY
 {
-  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 320K
+  RAM    (xrw)    : ORIGIN = 0x20000000,   LENGTH = 312K
+  RAM_DMA(xrw)    : ORIGIN = 0x2004E000,   LENGTH = 8K
   FLASH    (rx)    : ORIGIN = 0x8000000,   LENGTH = 1024K
 }
 
@@ -161,6 +162,14 @@ SECTIONS
     _ebss = .;         /* define a global symbol at bss end */
     __bss_end__ = _ebss;
   } >RAM
+
+  /* DMA buffers must live outside DTCM on STM32F7 (DMA cannot access DTCM). */
+  .dma_buffer (NOLOAD) :
+  {
+    . = ALIGN(32);
+    *(.dma_buffer)
+    . = ALIGN(32);
+  } >RAM_DMA
 
   /* User_heap_stack section, used to check that there is enough "RAM" Ram  type memory left */
   ._user_heap_stack :

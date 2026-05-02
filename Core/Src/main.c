@@ -31,6 +31,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "app_ui.h"
+#include "app_audio.h"
 #include "main_app.h"
 #include "stm32746g_discovery_sdram.h"
 /* USER CODE END Includes */
@@ -197,6 +198,9 @@ int main(void)
 
   /* Call init function for freertos objects (in cmsis_os2.c) */
   MX_FREERTOS_Init();
+
+  /* Start audio immediately to avoid task-start timing issues. */
+  (void)AppAudio_StartFromFile("0:/son/theme.wav");
 
   /* Start scheduler */
   osKernelStart();

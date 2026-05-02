@@ -39,7 +39,6 @@
 #include "others/translation/lv_translation.h"
 #include "drivers/wayland/lv_wayland_private.h"
 
-#endif
 #if LV_USE_DRAW_DAVE2D
     #include "draw/renesas/dave2d/lv_draw_dave2d.h"
 #endif
