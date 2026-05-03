@@ -24,6 +24,7 @@ compile_commands.json
 *.map
 *.out
 *.d
+*.Id
 
 # IDE/editor and tool caches
 .vscode/

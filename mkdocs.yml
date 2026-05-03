@@ -1,0 +1,49 @@
+site_name: Mario Bros STM32
+site_description: Documentation complète du projet embarqué STM32F746 avec LVGL, FreeRTOS et audio
+site_url: https://SamuelOgulluk.github.io/Mario_Bros_STM32/
+repo_url: https://github.com/SamuelOgulluk/Mario_Bros_STM32
+repo_name: Mario_Bros_STM32
+
+theme:
+  name: material
+  locale: fr
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - search.suggest
+    - content.code.copy
+    - content.tabs.link
+  palette:
+    - scheme: default
+      primary: blue
+      accent: orange
+
+plugins:
+  - search:
+      lang: fr
+  - glightbox
+
+markdown_extensions:
+  - toc:
+      title: Table des matières
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - tables
+  - attr_list
+
+nav:
+  - Accueil: index.md
+  - Guide:
+    - Objectifs: guide/objectifs.md
+    - Fonctionnalités: guide/fonctionnalites.md
+    - Organisation: guide/organisation.md
+    - LVGL et son utilisation: guide/lvgl.md
+    - Tâches: guide/taches.md
+    - Perspectives futures: guide/perspectives.md
