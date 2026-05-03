@@ -7,12 +7,12 @@ on:
       - master
     paths:
       - 'docs/**'
-      - 'mkdocs.yml'
+      - 'docs/mkdocs.yml'
       - '.github/workflows/docs-deploy.yml'
   pull_request:
     paths:
       - 'docs/**'
-      - 'mkdocs.yml'
+      - 'docs/mkdocs.yml'
   workflow_dispatch:
 
 permissions:

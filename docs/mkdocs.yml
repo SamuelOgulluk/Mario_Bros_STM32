@@ -3,6 +3,8 @@ site_description: Documentation complète du projet embarqué STM32F746 avec LVG
 site_url: https://SamuelOgulluk.github.io/Mario_Bros_STM32/
 repo_url: https://github.com/SamuelOgulluk/Mario_Bros_STM32
 repo_name: Mario_Bros_STM32
+docs_dir: .
+site_dir: site
 
 theme:
   name: material
