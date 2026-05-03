@@ -7,12 +7,12 @@ on:
       - master
     paths:
       - 'docs/**'
-      - 'docs/mkdocs.yml'
+      - 'mkdocs.yml'
       - '.github/workflows/docs-deploy.yml'
   pull_request:
     paths:
       - 'docs/**'
-      - 'docs/mkdocs.yml'
+      - 'mkdocs.yml'
   workflow_dispatch:
 
 permissions:
@@ -48,14 +48,13 @@ jobs:
       
       - name: Build documentation
         run: |
-          cd docs
-          mkdocs build --strict
+          mkdocs build
       
       - name: Upload build artifact
         if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
         uses: actions/upload-pages-artifact@v3
         with:
-          path: docs/site
+          path: site
 
   deploy:
     if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'

@@ -3,15 +3,13 @@
 ## Setup
 
 ```bash
-cd docs
-pip install -r requirements.txt
+pip install -r docs/requirements.txt
 mkdocs serve  # local preview
 ```
 
 ## Build
 
 ```bash
-cd docs
 mkdocs build  # crée dossier site/
 ```
 
